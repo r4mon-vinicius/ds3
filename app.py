@@ -3,11 +3,20 @@ from streamlit_drawable_canvas import st_canvas
 from skimage.transform import resize
 from skimage.feature import hog
 import joblib
+import requests
+import io
 import numpy as np
 import cv2
 
+MODEL_URL = "https://raw.githubusercontent.com/r4mon-vinicius/ds3/master/svm_model.pkl"
+
+@st.cache_resource
+def load_model_from_web(url):
+    response = requests.get(url)
+    return joblib.load(io.BytesIO(response.content))
+
 # Carrega modelo
-clf = joblib.load("svm_model.pkl")
+clf = load_model_from_web(MODEL_URL)
 
 st.title("Classificador de Dígitos com SVM")
 
